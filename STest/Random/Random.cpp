@@ -12,10 +12,10 @@
 #include <cassert>
 #include <ctime>
 
-#include "STest/Random/Random.hpp"
+#include "Random.hpp"
 
 extern "C" {
-#include "STest/Random/bsd_random.h"
+#include "bsd_random.h"
 }
 
 namespace STest {

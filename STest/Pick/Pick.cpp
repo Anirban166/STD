@@ -9,7 +9,7 @@
 // acknowledged.
 // ======================================================================
 
-#include "STest/Pick/Pick.hpp"
+#include "Pick.hpp"
 
 namespace STest {
 

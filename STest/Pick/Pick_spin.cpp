@@ -9,9 +9,9 @@
 // acknowledged.
 // ======================================================================
 
-#include "STest/Pick/Pick.hpp"
-#include "STest/Pick/Pick_spin.hpp"
-#include "STest/Random/Random.hpp"
+#include "Pick.hpp"
+#include "Pick_spin.hpp"
+#include "Random.hpp"
 
 namespace STest {
 

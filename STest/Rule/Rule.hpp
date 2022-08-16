@@ -12,8 +12,8 @@
 #ifndef STest_Rule_HPP
 #define STest_Rule_HPP
 
-#include "STest/testing.hpp"
-#include "STest/types/basic_types.h"
+#include "../testing.hpp"
+#include "../types/basic_types.h"
 
 namespace STest {
 

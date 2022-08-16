@@ -15,9 +15,9 @@
 #include <cassert>
 #include <cstring>
 
-#include "STest/Random/Random.hpp"
-#include "STest/Scenario/Scenario.hpp"
-#include "STest/Scenario/ScenarioArray.hpp"
+#include "Random.hpp"
+#include "Scenario.hpp"
+#include "ScenarioArray.hpp"
 
 namespace STest {
 

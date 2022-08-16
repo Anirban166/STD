@@ -9,8 +9,8 @@
 // acknowledged.
 // ======================================================================
 
-#include "STest/Pick/Pick.hpp"
-#include "STest/Random/Random.hpp"
+#include "Pick.hpp"
+#include "Random.hpp"
 
 namespace STest {
 

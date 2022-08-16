@@ -14,8 +14,8 @@
 
 #include <cassert>
 
-#include "STest/Scenario/SequenceScenario.hpp"
-#include "STest/Scenario/RuleScenario.hpp"
+#include "SequenceScenario.hpp"
+#include "RuleScenario.hpp"
 
 namespace STest {
 

@@ -12,7 +12,7 @@
 #ifndef STest_ConditionalScenario_HPP
 #define STest_ConditionalScenario_HPP
 
-#include "STest/Scenario/Scenario.hpp"
+#include "Scenario.hpp"
 
 namespace STest {
 

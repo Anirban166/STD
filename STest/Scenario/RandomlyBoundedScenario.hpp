@@ -12,8 +12,8 @@
 #ifndef STest_RandomlyBoundedScenario_HPP
 #define STest_RandomlyBoundedScenario_HPP
 
-#include "STest/Random/Random.hpp"
-#include "STest/Scenario/BoundedScenario.hpp"
+#include "Random.hpp"
+#include "BoundedScenario.hpp"
 
 namespace STest {
 

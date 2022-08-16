@@ -14,8 +14,8 @@
 
 #include <cassert>
 
-#include "STest/Scenario/IteratedScenario.hpp"
-#include "STest/Scenario/ScenarioArray.hpp"
+#include "IteratedScenario.hpp"
+#include "ScenarioArray.hpp"
 
 namespace STest {
 

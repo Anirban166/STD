@@ -14,7 +14,7 @@
 
 #include <cassert>
 
-#include "STest/Scenario/Scenario.hpp"
+#include "Scenario.hpp"
 
 namespace STest {
 

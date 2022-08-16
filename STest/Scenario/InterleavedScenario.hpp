@@ -15,8 +15,8 @@
 #include <cassert>
 #include <cstring>
 
-#include "STest/Scenario/Scenario.hpp"
-#include "STest/Scenario/ScenarioArray.hpp"
+#include "Scenario.hpp"
+#include "ScenarioArray.hpp"
 
 namespace STest {
 

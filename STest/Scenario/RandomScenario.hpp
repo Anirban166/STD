@@ -12,8 +12,8 @@
 #ifndef STest_RandomScenario_HPP
 #define STest_RandomScenario_HPP
 
-#include "STest/Scenario/InterleavedScenario.hpp"
-#include "STest/Scenario/RepeatedRuleScenario.hpp"
+#include "InterleavedScenario.hpp"
+#include "RepeatedRuleScenario.hpp"
 
 namespace STest {
 
