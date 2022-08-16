@@ -11,16 +11,16 @@ typedef uint32_t U32;
 class ExampleClass  { public: U32 ExampleFunction(U32 a, U32 b); };
 U32 ExampleClass::ExampleFunction(U32 a, U32 b) { return (a / b); }
 
-struct RandomizeRule : public STest::Rule<ExampleClass> 
+struct ExampleRule: public STest::Rule<ExampleClass> 
 {
-    RandomizeRule(const char* ruleName);
+    ExampleRule(const char* ruleName);
     bool precondition(const ExampleClass& state)
     void action(ExampleClass& truth);
 };
 
-RandomizeRule::RandomizeRule(const char* ruleName): STest::Rule<ExampleClass>(ruleName.toChar()) {}
-bool RandomizeRule::precondition(const ExampleClass &state) { return true; }
-void RandomizeRule::action(ExampleClass &state) 
+ExampleRule::ExampleRule(const char* ruleName): STest::Rule<ExampleClass>(ruleName.toChar()) {}
+bool ExampleRule::precondition(const ExampleClass &state) { return true; }
+void ExampleRule::action(ExampleClass &state) 
 {
     U32 dividend = STest::Pick::lowerUpper(0, 100), divisor = STest::Pick::lowerUpper(0, 100);
     assert(divisor != 0);
@@ -30,7 +30,7 @@ void RandomizeRule::action(ExampleClass &state)
 
 int main()
 {
-    ExampleClass exampleObject;
-    RandomizeRule exampleRule("Hello");
-    exampleRule.apply(exampleObject);
+    ExampleClass exampleClassObject;
+    ExampleRule exampleRuleObject("Hello");
+    exampleRuleObject.apply(exampleClassObject);
 }
