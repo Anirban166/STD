@@ -16,8 +16,8 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include "Random.hpp"
-#include "Rule.hpp"
+#include "../Random/Random.hpp"
+#include "../Rule/Rule.hpp"
 
 namespace STest {
 

@@ -14,7 +14,7 @@
 
 #include <cassert>
 
-#include "Random.hpp"
+#include "../Random/Random.hpp"
 
 namespace STest {
 

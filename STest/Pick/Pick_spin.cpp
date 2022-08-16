@@ -11,7 +11,7 @@
 
 #include "Pick.hpp"
 #include "Pick_spin.hpp"
-#include "Random.hpp"
+#include "../Random/Random.hpp"
 
 namespace STest {
 

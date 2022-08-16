@@ -10,7 +10,7 @@
 // ======================================================================
 
 #include "Pick.hpp"
-#include "Random.hpp"
+#include "../Random/Random.hpp"
 
 namespace STest {
 
