@@ -11,14 +11,14 @@ typedef uint32_t U32;
 class ExampleClass  { public: U32 ExampleFunction(U32 a, U32 b); };
 U32 ExampleClass::ExampleFunction(U32 a, U32 b) { return (a / b); }
 
-struct ExampleRule: public STest::Rule<ExampleClass> 
+struct ExampleRule: public STest::Rule<ExampleClass>
 {
     ExampleRule(const char* ruleName);
-    bool precondition(const ExampleClass& state)
+    bool precondition(const ExampleClass& state);
     void action(ExampleClass& truth);
 };
 
-ExampleRule::ExampleRule(const char* ruleName): STest::Rule<ExampleClass>(ruleName.toChar()) {}
+ExampleRule::ExampleRule(const char* ruleName): STest::Rule<ExampleClass>(ruleName) {}
 bool ExampleRule::precondition(const ExampleClass &state) { return true; }
 void ExampleRule::action(ExampleClass &state) 
 {
