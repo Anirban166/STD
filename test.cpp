@@ -5,13 +5,13 @@
 #include "STest/Scenario/RandomScenario.hpp"
 #include "STest/Scenario/BoundedScenario.hpp"
 
-typedef int32_t  I32;
+typedef double D;
 typedef uint32_t U32;
 
-class ExampleClass  { public: U32 ExampleFunction(U32 a, U32 b); };
-U32 ExampleClass::ExampleFunction(U32 a, U32 b) { return (a / b); }
+class ExampleClass { public: D ExampleFunction(D a, D b);  };
+D ExampleClass::ExampleFunction(D a, D b) { return (a / b); }
 
-struct ExampleRule: public STest::Rule<ExampleClass>
+struct ExampleRule: public STest::Rule<ExampleClass> 
 {
     ExampleRule(const char* ruleName);
     bool precondition(const ExampleClass& state);
@@ -22,15 +22,14 @@ ExampleRule::ExampleRule(const char* ruleName): STest::Rule<ExampleClass>(ruleNa
 bool ExampleRule::precondition(const ExampleClass &state) { return true; }
 void ExampleRule::action(ExampleClass &state) 
 {
-    U32 dividend = STest::Pick::lowerUpper(0, 100), divisor = STest::Pick::lowerUpper(0, 100);
-    assert(divisor != 0);
-    U32 result = state.ExampleFunction(dividend, divisor);
+    D dividend = STest::Pick::lowerUpper(0, 100), divisor = STest::Pick::lowerUpper(0, 100);
+    D result = state.ExampleFunction(dividend, divisor);
     std::cout << "Result of division: " << dividend << "/" << divisor << " = " << result << "\n";
 }
 
 int main()
 {
     ExampleClass exampleClassObject;
-    ExampleRule exampleRuleObject("Hello");
-    exampleRuleObject.apply(exampleClassObject);
-}
+    ExampleRule exampleRuleObject("ExampleRule");
+    exampleRuleObject.apply(exampleClassObject); 
+}    
