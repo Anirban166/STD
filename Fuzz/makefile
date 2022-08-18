@@ -1,0 +1,24 @@
+# Todo: replace Pick_default with Pick_fuzzer/deepstate
+C = g++
+CXXFLAGS = -Wall -g -std=c++11 -Iinclude
+
+test.bin: bsd_random.o Random.o Pick.o Pick_default.o fuzztest.o
+	$(C) $(CXXFLAGS) -o fuzztest.bin bsd_random.o Random.o Pick.o Pick_default.o fuzztest.o
+
+bsd_random.o: ../STest/Random/bsd_random.c
+	gcc -Wall -g -c -Iinclude ../STest/Random/bsd_random.c
+
+Random.o: ../STest/Random/Random.cpp
+	$(C) $(CXXFLAGS) -c ../STest/Random/Random.cpp
+
+Pick.o: ../STest/Pick/Pick.cpp
+	$(C) $(CXXFLAGS) -c ../STest/Pick/Pick.cpp
+
+Pick_default.o: ../STest/Pick/Pick_default.cpp
+	$(C) $(CXXFLAGS) -c ../STest/Pick/Pick_default.cpp  
+
+test.o: ./fuzztest.cpp
+	$(C) $(CXXFLAGS) -c ./fuzztest.cpp
+
+clean:	
+	rm fuzztest.bin bsd_random.o Random.o Pick.o Pick_default.o fuzztest.o

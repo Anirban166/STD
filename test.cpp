@@ -5,17 +5,16 @@
 #include "STest/Scenario/RandomScenario.hpp"
 #include "STest/Scenario/BoundedScenario.hpp"
 
-typedef double D;
 typedef uint32_t U32;
 #define DRANGE 100000
 
 class ArithmeticOperations          
 { 
   public: 
-    D DivisionFunction(D a, D b);          // Division by zero check
+    U32 DivisionFunction(U32 a, U32 b);     // Division by zero check
     U32 AdditionFunction(U32 a, U32 b);    // U32 overflow check
 };
-D ArithmeticOperations::DivisionFunction(D a, D b)       { return (a / b); }
+U32 ArithmeticOperations::DivisionFunction(U32 a, U32 b) { return (a / b); }
 U32 ArithmeticOperations::AdditionFunction(U32 a, U32 b) { return (a + b); }
 
 struct Division: public STest::Rule<ArithmeticOperations> 
@@ -29,8 +28,8 @@ Division::Division(const char* ruleName): STest::Rule<ArithmeticOperations>(rule
 bool Division::precondition(const ArithmeticOperations &state) { return true; }
 void Division::action(ArithmeticOperations &state) 
 {
-    D dividend = STest::Pick::lowerUpper(0, DRANGE), divisor = STest::Pick::lowerUpper(0, DRANGE);
-    D result = state.DivisionFunction(dividend, divisor);
+    U32 dividend = STest::Pick::lowerUpper(0, DRANGE), divisor = STest::Pick::lowerUpper(0, DRANGE);
+    U32 result   = state.DivisionFunction(dividend, divisor);
     std::cout << "Result of division: " << dividend << "/" << divisor << " = " << result << "\n";
 }
 
@@ -46,7 +45,7 @@ bool Addition::precondition(const ArithmeticOperations &state) { return true; }
 void Addition::action(ArithmeticOperations &state) 
 {
     U32 firstU32 = STest::Pick::lowerUpper(0, UINT32_MAX), secondU32 = STest::Pick::lowerUpper(0, UINT32_MAX);
-    U32 result = state.AdditionFunction(firstU32, secondU32);
+    U32 result   = state.AdditionFunction(firstU32, secondU32);
     std::cout << "Result of addition: " << firstU32 << "+" << secondU32 << " = " << result << "\n";
 }
 
@@ -61,5 +60,5 @@ int main()
 
     STest::Rule<ArithmeticOperations>* rules[] = { &exampleDivisionRuleObject, &exampleAdditionRuleObject };
     STest::RandomScenario<ArithmeticOperations> randomRules("Peanuts", rules, 2);
-    STest::BoundedScenario<ArithmeticOperations> bounded("NASA Jesus", randomRules, 42069);
+    STest::BoundedScenario<ArithmeticOperations> bounded("NASA Jesus", randomRules, 4269);
 }
