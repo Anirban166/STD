@@ -49,8 +49,8 @@ namespace STest {
       void apply(
           State& state //!< The system state
       ) {
-        ASSERT_TRUE(this->precondition(state))
-          << "precondition failed applying rule " << this->name;
+        assert(this->precondition(state));
+          // << "precondition failed applying rule " << this->name;
         this->action(state);
       }
 
