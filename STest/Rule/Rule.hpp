@@ -12,6 +12,7 @@
 #ifndef STest_Rule_HPP
 #define STest_Rule_HPP
 
+#include "assert.h"
 #include "../testing.hpp"
 #include "../types/basic_types.h"
 
