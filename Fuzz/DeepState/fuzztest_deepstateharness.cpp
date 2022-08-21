@@ -21,8 +21,7 @@ bool Division::precondition(const ArithmeticOperations &state) { return true; }
 void Division::action(ArithmeticOperations &state) 
 {
     uint32_t dividend = DeepState_UIntInRange(0, 100), divisor  = DeepState_UIntInRange(0, 100);   
-    ASSERT_NE(divisor, 0) 
-    << "Divisor cannot be 0! (divisor and dividend values for this run: " << dividend << ", " << divisor << ")";    
+    ASSERT_NE(divisor, 0) << "Divisor cannot be 0! (divisor and dividend values for this run: " << dividend << ", " << divisor << ")";    
     float result = state.DivisionFunction(dividend, divisor);   
     // Not really concerned about the result if it's a successful case (divisor!=0), but gotta keep the compiler happy with its' unusued variable warning:
     (void)result;

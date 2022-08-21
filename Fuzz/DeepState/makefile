@@ -1,5 +1,5 @@
 C = g++
-CXXFLAGS = -Wall -g -std=c++11 -Iinclude
+CXXFLAGS = -Wall -g -std=c++11 -Iinclude -no-pie
 
 test.bin: bsd_random.o Random.o Pick.o Pick_default.o fuzztest_deepstateharness.o
 	$(C) $(CXXFLAGS) -ldeepstate -o fuzztest_deepstateharness.bin bsd_random.o Random.o Pick.o Pick_default.o fuzztest_deepstateharness.o
