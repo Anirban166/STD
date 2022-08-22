@@ -57,6 +57,124 @@ These 'interesting' inputs depend on a metric, which is code coverage in AFL and
 
 As for how these inputs get transformed themselves, it depends on both deterministic and probabilistic procedures such as bitflips (basically flipping of n-consecutive bits by XOR'ing them with others), algebraic manipulations, splicing, etc. These are the 'stages' of input mutation, which are repeated over and over again, with each stage possibly having thousands of iterations themselves (just a guess based on the iterations per second shown and the noticeable change in stages visually reflected in the 'stage progress' section of the interface when running the fuzzer).
 
-AFL generates a queue and loads into it each test case/file (which gets distributed to processes branched from Master when forked, with synchronized updates to the queue) that is presented as initial input or corpus. These get mutated by the aforementioned (and others that I don't know of) strategies during the fuzzing process, and ones which result in a new state transition (as recorded by the instrumentation) get added to the queue.
+AFL generates a queue and loads into it each test case/file (which gets distributed to processes branched from Master when forked, with synchronized updates to the queue) that is presented as initial input or corpus. These get mutated by the aforementioned (and others that I don't know of) strategies during the fuzzing process, and the ones which result in a new state transition (as recorded by the instrumentation) get added to the queue.
 
-A caveat here would be that this sort of fuzzing scales real quick (it is not a thorough search as something such as a symbolic execution engine would do as that misses the point here, but it is still quick to keep exploring the search space in a directed manner till eternity) and comes at the cost of millions of writes (apart from `forks()`, file I/O, and all that jazz) in a relatively short amount of time, which can drain your SSD (like `tmpfs`, keeping the output files in virtual memory could potentially help with this). I wish such computationally intensive workloads could be pushed into GPUs, but AFL only uses CPU cores!
+A caveat here would be that this sort of fuzzing scales real quick (it is not a thorough search or something such as a symbolic execution engine would do as that misses the point here, but it is still quick to keep exploring the search space in a directed manner till eternity) and comes at the cost of millions of writes (apart from `forks()`, file I/O, and all that jazz) in a relatively short amount of time, which can drain your SSD (like `tmpfs`, keeping the output files in virtual memory could potentially help with this). I wish such computationally intensive workloads could be pushed onto GPUs, but AFL only uses CPU cores!
+
+Now back to the test harness here - its a DeepState-specific one that makes use of the static library, so while keeping `-ldeepstate` to link it together, one can use AFL on the executable built from the harness by compiling with the afl version of compilers. For instance, one could either set up the environment variables for the C and C++ compilers to point to the afl versions (`afl-gcc` and `afl-g++` for Linux, `afl-clang` and `afl-clang++` or their `fast` versions for OS X) if running the compilation and linking process via shell, or change those settings in the makefile that I'm using.
+
+For easy commanding, note that DeepState *does* come with python-scripted 'executors' that facilitate the running of fuzzers (and symbolic execution engines as well). Like for AFL, it would be `deepstate-afl ./<afl-compiled_executable>` at the simplest. But my current setup of DeepState on Docker doesn't facilitate the running of these executors (and here's a mention of the same in this [issue comment](https://github.com/trailofbits/deepstate/issues/399#issuecomment-1205607189) from Alex as I see), so I can't vouch for that at the moment. Running AFL on your own does require learning the AFL fuzzer's syntax though (which one might look into anyway when intending to use its arguments while running with DeepState's executors, i.e. by adding `--fuzzer_args ...` for any AFL-specific arguments). To avoid the learning curve that comes while setting up and using such fuzzers has been a core point of using DeepState in the first place, but if you have read and come so far, I'm sure you can make it run and fix any probable errors yourself :)
+
+Steps are straightforward and follow the same agenda as I mentioned above. Start by making the switch to afl-based compilers and build the executable:
+```sh
+<username>@<systemname>:~/STest-Demo/Fuzz/DeepState$ make      
+afl-gcc -Wall -g -c -Iinclude ../../STest/Random/bsd_random.c
+afl-cc 2.52b by <lcamtuf@google.com>
+afl-as 2.52b by <lcamtuf@google.com>
+[+] Instrumented 117 locations (64-bit, non-hardened mode, ratio 100%).
+afl-g++ -Wall -g -std=c++11 -Iinclude -no-pie -c ../../STest/Random/Random.cpp
+afl-cc 2.52b by <lcamtuf@google.com>
+afl-as 2.52b by <lcamtuf@google.com>
+[+] Instrumented 25 locations (64-bit, non-hardened mode, ratio 100%).
+afl-g++ -Wall -g -std=c++11 -Iinclude -no-pie -c ../../STest/Pick/Pick.cpp
+afl-cc 2.52b by <lcamtuf@google.com>
+afl-as 2.52b by <lcamtuf@google.com>
+[+] Instrumented 1 locations (64-bit, non-hardened mode, ratio 100%).
+afl-g++ -Wall -g -std=c++11 -Iinclude -no-pie -c ../../STest/Pick/Pick_default.cpp  
+afl-cc 2.52b by <lcamtuf@google.com>
+afl-as 2.52b by <lcamtuf@google.com>
+[+] Instrumented 3 locations (64-bit, non-hardened mode, ratio 100%).
+afl-g++ -Wall -g -std=c++11 -Iinclude -no-pie -c ./fuzztest_deepstateharness.cpp
+afl-cc 2.52b by <lcamtuf@google.com>
+afl-as 2.52b by <lcamtuf@google.com>
+[+] Instrumented 197 locations (64-bit, non-hardened mode, ratio 100%).
+afl-g++ -Wall -g -std=c++11 -Iinclude -no-pie -ldeepstate -o fuzztest_deepstateharness.bin bsd_random.o Random.o Pick.o Pick_default.o fuzztest_deepstateharness.o
+afl-cc 2.52b by <lcamtuf@google.com>
+```
+Run it using `afl-fuzz` with desired parameters:
+```sh
+<username>@<systemname>:~/STest-Demo/Fuzz/DeepState$ afl-fuzz -i ./ -o out -- ./fuzztest_deepstateharness.bin -m none # @@
+afl-fuzz 2.52b by <lcamtuf@google.com>
+[+] You have 8 CPU cores and 2 runnable tasks (utilization: 25%).
+[+] Try parallel jobs - see /usr/local/share/doc/afl/parallel_fuzzing.txt.
+[*] Checking CPU core loadout...
+[+] Found a free CPU core, binding to #0.
+[*] Checking core_pattern...
+[*] Setting up output directories...
+[+] Output directory exists but deemed OK to reuse.
+[*] Deleting old session data...
+[+] Output dir cleanup successful.
+[*] Scanning './'...
+[+] No auto-generated dictionary tokens to reuse.
+[*] Creating hard links for all input files...
+[*] Validating target binary...
+[*] Attempting dry run with 'id:000000,orig:Pick.o'...
+[*] Spinning up the fork server...
+[+] All right - fork server is up.
+    len = 7376, map size = 16, exec speed = 996 us
+[*] Attempting dry run with 'id:000001,orig:Pick_default.o'...
+    len = 9648, map size = 16, exec speed = 902 us
+[!] WARNING: No new instrumentation output, test case may be useless.
+[*] Attempting dry run with 'id:000002,orig:Random.o'...
+    len = 31296, map size = 16, exec speed = 880 us
+[!] WARNING: No new instrumentation output, test case may be useless.
+[*] Attempting dry run with 'id:000003,orig:bsd_random.o'...
+    len = 31736, map size = 16, exec speed = 737 us
+[!] WARNING: No new instrumentation output, test case may be useless.
+[*] Attempting dry run with 'id:000004,orig:fuzztest_deepstateharness.bin'...
+    len = 228632, map size = 16, exec speed = 760 us
+[!] WARNING: No new instrumentation output, test case may be useless.
+[*] Attempting dry run with 'id:000005,orig:fuzztest_deepstateharness.cpp'...
+    len = 2882, map size = 16, exec speed = 698 us
+[!] WARNING: No new instrumentation output, test case may be useless.
+[*] Attempting dry run with 'id:000006,orig:fuzztest_deepstateharness.o'...
+    len = 186216, map size = 16, exec speed = 750 us
+[!] WARNING: No new instrumentation output, test case may be useless.
+[*] Attempting dry run with 'id:000007,orig:makefile'...
+    len = 779, map size = 16, exec speed = 686 us
+[!] WARNING: No new instrumentation output, test case may be useless.
+[+] All test cases processed.
+
+[!] WARNING: Some test cases are huge (223 kB) - see /usr/local/share/doc/afl/perf_tips.txt!
+[!] WARNING: Some test cases look useless. Consider using a smaller set.
+[+] Here are some useful stats:
+
+    Test case count : 1 favored, 0 variable, 8 total
+       Bitmap range : 16 to 16 bits (average: 16.00 bits)
+        Exec timing : 686 to 996 us (average: 801 us)
+
+[*] No -t option specified, so I'll use exec timeout of 20 ms.
+[+] All set and ready to roll!
+
+
+            american fuzzy lop 2.52b (fuzztest_deepstateharness.bin)
+
+┌─ process timing ─────────────────────────────────────┬─ overall results ─────┐
+│        run time : 0 days, 0 hrs, 1 min, 42 sec       │  cycles done : 204    │
+│   last new path : none yet (odd, check syntax!)      │  total paths : 8      │
+│ last uniq crash : none seen yet                      │ uniq crashes : 0      │
+│  last uniq hang : none seen yet                      │   uniq hangs : 0      │
+├─ cycle progress ────────────────────┬─ map coverage ─┴───────────────────────┤
+│  now processing : 0* (0.00%)        │    map density : 0.02% / 0.02%         │
+│ paths timed out : 0 (0.00%)         │ count coverage : 1.00 bits/tuple       │
+├─ stage progress ────────────────────┼─ findings in depth ────────────────────┤
+│  now trying : havoc                 │ favored paths : 1 (12.50%)             │
+│ stage execs : 34/256 (13.28%)       │  new edges on : 1 (12.50%)             │
+│ total execs : 787k                  │ total crashes : 0 (0 unique)           │
+│  exec speed : 1708/sec              │  total tmouts : 0 (0 unique)           │
+├─ fuzzing strategy yields ───────────┴───────────────┬─ path geometry ────────┤
+│   bit flips : 0/256, 0/248, 0/232                   │    levels : 1          │
+│  byte flips : 0/32, 0/24, 0/8                       │   pending : 0          │
+│ arithmetics : 0/1788, 0/9, 0/0                      │  pend fav : 0          │
+│  known ints : 0/194, 0/657, 0/352                   │ own finds : 0          │
+│  dictionary : 0/0, 0/0, 0/0                         │  imported : n/a        │
+│       havoc : 0/422k, 0/361k                        │ stability : 100.00%    │
+│        trim : 99.99%/167, 0.00%                     ├────────────────────────┘
+^C────────────────────────────────────────────────────┘          [cpu000: 29%]
+
++++ Testing aborted by user +++
+[+] We're done here. Have a nice day!
+```
+Specifying input and output directories (corpus, results) is required, apart from specifying the executable to be attacked. I'm setting the memory limit to `none`, which allows no constraints on the resource usage (`ulimit` returns `unlimited`), and I do this specifically to avoid an OOM fault in the dynamic linker that AFL at times could report due to the default cap (50 megabytes) being restrictive. Again, I'm running this on a container so the concerns are less.
+
+> To be updated (I'll probably write a blog post on/including this in the long run)
