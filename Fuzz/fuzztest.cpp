@@ -7,7 +7,11 @@
 #define N 1000000000
 typedef uint32_t U32;
 
-class ArithmeticOperations             { public: U32 DivisionFunction(U32 a, U32 b); };
+class ArithmeticOperations             
+{ 
+    public: 
+        U32 DivisionFunction(U32 a, U32 b); 
+};
 U32 ArithmeticOperations::DivisionFunction(U32 a, U32 b) { return (a / (a - b + 42)); }
 
 // Not checking for overflows (U32 for instance, like in ../test.cpp) since that does not raise an exception or crash. 
